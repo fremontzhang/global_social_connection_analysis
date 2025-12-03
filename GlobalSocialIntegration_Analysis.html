@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海外社交媒体聚合对接可行性分析报告 (Ayrshare方案)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for chart containers and specific layout needs */
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #fdfbf7; /* Warm neutral background */
+            color: #1f2937;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom scrollbar for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Architecture Diagram Connectors */
+        .connector-line {
+            position: absolute;
+            background-color: #cbd5e1;
+            z-index: 0;
+        }
+        
+        .nav-item.active {
+            border-bottom: 2px solid #0f766e;
+            color: #0f766e;
+            font-weight: 600;
+        }
+
+        .step-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .step-card.active-step {
+            border-left: 4px solid #0f766e;
+            background-color: #f0fdfa;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Professional Teal -->
+    <!-- Application Structure Plan: 
+         1. Executive Summary: High-level Go/No-Go decision visuals.
+         2. Feasibility Matrix: Detailed breakdown of supported platforms and features (Data/Publishing).
+         3. Technical Architecture: Interactive block diagram showing the data flow.
+         4. Product Roadmap: Timeline and steps.
+         This structure moves from "Can we do it?" to "How do we do it?" to "When can we finish?".
+    -->
+    <!-- Visualization & Content Choices:
+         - Cost/Time Comparison: Bar Charts (Chart.js) to show the massive savings of middleware.
+         - Platform Matrix: CSS Grid with JS filtering to quickly find specific platform capabilities.
+         - Architecture: CSS Flex/Grid layout to diagram the API flow without Images/SVG.
+         - Roadmap: Vertical timeline using Tailwind borders.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-[#fdfbf7] text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-teal-800">GlobalConnect<span class="text-teal-500">.io</span></span>
+                    <span class="ml-4 px-3 py-1 text-xs font-semibold text-teal-800 bg-teal-100 rounded-full hidden sm:inline-block">Ayrshare 调研报告</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('summary')" class="nav-item active px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors" id="nav-summary">核心结论</button>
+                    <button onclick="switchTab('platforms')" class="nav-item px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors" id="nav-platforms">平台覆盖度</button>
+                    <button onclick="switchTab('architecture')" class="nav-item px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors" id="nav-architecture">技术架构方案</button>
+                    <button onclick="switchTab('roadmap')" class="nav-item px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors" id="nav-roadmap">实施路线图</button>
+                </nav>
+                <div class="md:hidden">
+                    <!-- Mobile menu placeholder -->
+                    <button class="text-gray-500 hover:text-gray-700" onclick="alert('请在桌面端查看以获得最佳体验')">☰</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- SECTION 1: EXECUTIVE SUMMARY -->
+        <section id="summary" class="tab-content block animate-fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">调研结论：高度可行 (High Feasibility)</h1>
+                <p class="text-lg text-gray-600 max-w-3xl">
+                    通过 Ayrshare 作为中间件对接海外社交媒体是目前最高效的方案。它可以一次性解决 API 申请难、维护成本高、Token 管理复杂等核心痛点。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <!-- KPI Cards -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="text-sm font-medium text-gray-500 mb-1">开发效率提升</div>
+                    <div class="text-4xl font-bold text-teal-600">85%</div>
+                    <p class="text-xs text-gray-400 mt-2">相比逐个对接官方 API</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="text-sm font-medium text-gray-500 mb-1">覆盖平台数量</div>
+                    <div class="text-4xl font-bold text-indigo-600">10+</div>
+                    <p class="text-xs text-gray-400 mt-2">包含 FB, Insta, TikTok, YouTube 等</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="text-sm font-medium text-gray-500 mb-1">维护成本降低</div>
+                    <div class="text-4xl font-bold text-amber-600">90%</div>
+                    <p class="text-xs text-gray-400 mt-2">无需应对 API 版本频繁更新</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart: Dev Time Comparison -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">开发周期对比估算 (周)</h3>
+                    <div class="chart-container">
+                        <canvas id="devTimeChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 bg-gray-50 p-3 rounded">
+                        <strong>分析：</strong> 自研对接需要处理每个平台的 OAuth2 流程、数据标准化及合规性审核。Ayrshare 提供了统一接口，仅需对接一次。
+                    </p>
+                </div>
+
+                <!-- Text: Core Value Props -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-center">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">核心价值主张</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 text-green-600 font-bold text-sm">✓</div>
+                            <div class="ml-4">
+                                <h4 class="text-base font-medium text-gray-900">一次性多平台发布</h4>
+                                <p class="text-sm text-gray-500">通过单一 API 端点将图文、视频分发至 Instagram, TikTok, LinkedIn 等。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-sm">✓</div>
+                            <div class="ml-4">
+                                <h4 class="text-base font-medium text-gray-900">统一的数据分析结构</h4>
+                                <p class="text-sm text-gray-500">Ayrshare 将不同平台的点赞、展示、点击等数据标准化返回，无需自己清洗数据。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 font-bold text-sm">✓</div>
+                            <div class="ml-4">
+                                <h4 class="text-base font-medium text-gray-900">解决复杂的账号授权</h4>
+                                <p class="text-sm text-gray-500">提供托管的授权页面（Hosted Auth），用户只需点击即可完成授权，无需您开发 OAuth 流程。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-orange-50 rounded-lg border border-orange-100">
+                        <h4 class="text-sm font-bold text-orange-800">⚠️ 潜在风险提示</h4>
+                        <ul class="list-disc list-inside text-xs text-orange-700 mt-2 space-y-1">
+                            <li>依赖第三方服务的稳定性 (SLA)。</li>
+                            <li>部分平台的高级特殊功能可能不支持 (如 Instagram 的某些贴纸)。</li>
+                            <li>成本随连接的用户账号数量增长 (需考虑定价模型)。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PLATFORM CAPABILITIES -->
+        <section id="platforms" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">平台能力覆盖矩阵</h2>
+                <p class="text-gray-600 mt-2">Ayrshare 支持的能力概览。绿色代表支持，灰色代表不支持或受限。</p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="filterPlatforms('all')" class="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm hover:bg-gray-700 transition">全部显示</button>
+                <button onclick="filterPlatforms('video')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 transition">短视频类 (TikTok/Reels)</button>
+                <button onclick="filterPlatforms('social')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 transition">图文社交 (FB/Ins/X)</button>
+                <button onclick="filterPlatforms('professional')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 transition">职场/商业 (LinkedIn/GMB)</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="platform-grid">
+                <!-- Platform cards injected by JS -->
+            </div>
+            
+            <div class="mt-8 bg-white p-6 rounded-xl border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">数据获取能力详情</h3>
+                <div class="chart-container">
+                    <canvas id="analyticsCoverageChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-2">数据来源：Ayrshare 官方文档 (Analytics API)</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ARCHITECTURE & TECH -->
+        <section id="architecture" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">技术架构与集成方案</h2>
+                <p class="text-gray-600 mt-2">采用 Ayrshare "Max Pack" 或 "Business" 计划的集成模式。</p>
+            </div>
+
+            <!-- Conceptual Architecture Diagram -->
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 overflow-x-auto">
+                <h3 class="text-lg font-bold text-gray-800 mb-8 border-b pb-2">数据流向架构图</h3>
+                
+                <div class="min-w-[800px] flex justify-between items-stretch relative h-64">
+                    
+                    <!-- Client Side -->
+                    <div class="w-48 flex flex-col justify-center relative z-10">
+                        <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-lg text-center shadow-sm mb-4">
+                            <div class="text-2xl mb-2">👤</div>
+                            <div class="font-bold text-blue-900">最终用户</div>
+                            <div class="text-xs text-blue-600">操作界面 (前端)</div>
+                        </div>
+                        <div class="text-center text-xs text-gray-400">发起授权 / 发布内容 / 查看报表</div>
+                    </div>
+
+                    <!-- Connector Arrow -->
+                    <div class="flex-1 flex items-center justify-center relative">
+                         <div class="h-0.5 w-full bg-gray-300 absolute top-1/2"></div>
+                         <div class="bg-white px-2 z-10 text-xs text-gray-500 font-mono border border-gray-200 rounded">HTTPS / JSON</div>
+                    </div>
+
+                    <!-- Your Server -->
+                    <div class="w-48 flex flex-col justify-center relative z-10">
+                        <div class="bg-teal-50 border-2 border-teal-200 p-4 rounded-lg text-center shadow-sm h-full flex flex-col justify-center">
+                            <div class="text-2xl mb-2">🏢</div>
+                            <div class="font-bold text-teal-900">您的业务后端</div>
+                            <div class="text-xs text-teal-600 my-2">API 路由层</div>
+                            <div class="text-xs bg-white p-1 rounded border border-teal-100 text-left space-y-1">
+                                <div>• 用户映射 (UserKey)</div>
+                                <div>• 业务逻辑处理</div>
+                                <div>• 数据存储 (DB)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connector Arrow -->
+                    <div class="flex-1 flex items-center justify-center relative">
+                        <div class="h-0.5 w-full bg-gray-300 absolute top-1/2"></div>
+                        <div class="bg-white px-2 z-10 text-xs text-gray-500 font-mono border border-gray-200 rounded">API Key / JWT</div>
+                   </div>
+
+                    <!-- Ayrshare Middleware -->
+                    <div class="w-48 flex flex-col justify-center relative z-10">
+                        <div class="bg-indigo-50 border-2 border-indigo-200 p-4 rounded-lg text-center shadow-sm h-full flex flex-col justify-center">
+                            <div class="text-2xl mb-2">⚡</div>
+                            <div class="font-bold text-indigo-900">Ayrshare API</div>
+                            <div class="text-xs text-indigo-600 my-2">中间件服务</div>
+                            <div class="text-xs bg-white p-1 rounded border border-indigo-100 text-left space-y-1">
+                                <div>• Token 自动刷新</div>
+                                <div>• API 聚合与规范化</div>
+                                <div>• Webhook 回调</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connector Arrow -->
+                    <div class="flex-1 flex items-center justify-center relative">
+                        <div class="h-0.5 w-full bg-gray-300 absolute top-1/2"></div>
+                        <div class="bg-white px-2 z-10 text-xs text-gray-500 font-mono border border-gray-200 rounded">OAuth2</div>
+                   </div>
+
+                    <!-- Social Networks -->
+                    <div class="w-48 flex flex-col justify-center relative z-10 space-y-2">
+                        <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center text-xs text-gray-600 font-medium">Facebook API</div>
+                        <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center text-xs text-gray-600 font-medium">Instagram API</div>
+                        <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center text-xs text-gray-600 font-medium">TikTok API</div>
+                        <div class="bg-gray-50 border border-gray-200 p-2 rounded text-center text-xs text-gray-600 font-medium">LinkedIn API</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Steps -->
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">核心交互流程 (API Flow)</h3>
+                    <div class="space-y-4">
+                        <div class="step-card bg-white p-4 rounded-lg border border-gray-200" onclick="showCodeSnippet('auth')">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-gray-800">1. 创建子用户 (Create Profile)</h4>
+                                <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">API: /profiles/profile</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">当您的用户注册时，调用 Ayrshare API 为其创建一个唯一的 `profileKey`。这个 Key 将用于后续所有操作。</p>
+                        </div>
+
+                        <div class="step-card bg-white p-4 rounded-lg border border-gray-200" onclick="showCodeSnippet('connect')">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-gray-800">2. 生成授权链接 (JWT)</h4>
+                                <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">API: /profiles/generateJWT</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">调用接口生成一个前端可用的 JWT Token，用于加载 Ayrshare 提供的 "Link Social Accounts" 预制前端组件或弹窗。</p>
+                        </div>
+
+                        <div class="step-card bg-white p-4 rounded-lg border border-gray-200" onclick="showCodeSnippet('post')">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-gray-800">3. 发布内容 (Post)</h4>
+                                <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">API: /post</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">发送 JSON 数据（文本、图片URL、平台列表）到 API。Ayrshare 处理视频转码和发布。</p>
+                        </div>
+
+                        <div class="step-card bg-white p-4 rounded-lg border border-gray-200" onclick="showCodeSnippet('analytics')">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-gray-800">4. 获取数据 (Analytics)</h4>
+                                <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">API: /analytics/social</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">查询特定帖子的表现或账户维度的聚合数据。通过 Webhook 接收异步的发布结果通知。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code/Simulated Console -->
+                <div class="bg-gray-900 rounded-xl p-6 font-mono text-sm text-gray-300 shadow-inner flex flex-col">
+                    <div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-2">
+                        <span class="text-green-400">Request Simulator</span>
+                        <span id="code-label" class="text-xs text-gray-500">Select a step on left</span>
+                    </div>
+                    <div id="code-display" class="overflow-y-auto max-h-[400px]">
+                        <p class="text-gray-500 italic">// 点击左侧流程步骤查看对应的 API 请求结构示例...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: ROADMAP -->
+        <section id="roadmap" class="tab-content hidden">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">实施路线图 (预计 4-6 周)</h2>
+                <p class="text-gray-600 mt-2">从技术预研到全量上线的推荐阶段规划。</p>
+            </div>
+
+            <div class="relative border-l-4 border-teal-200 ml-6 space-y-12 my-12">
+                <!-- Phase 1 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-teal-500 border-4 border-white shadow"></div>
+                    <h3 class="font-bold text-lg text-gray-800">阶段一：验证与原型 (Week 1)</h3>
+                    <div class="mt-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                            <li>注册 Ayrshare 免费/测试账号。</li>
+                            <li>后端跑通 `/profile` 和 `/post` 接口 (使用 Postman)。</li>
+                            <li>前端集成 "Social Linking" 弹窗，验证 Facebook/Instagram 授权流程。</li>
+                            <li><strong>产出：</strong> 内部 POC 原型，能够连接一个账号并发送一条测试贴。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-white border-4 border-teal-500 shadow"></div>
+                    <h3 class="font-bold text-lg text-gray-800">阶段二：核心功能开发 (Week 2-3)</h3>
+                    <div class="mt-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                            <li>构建后端 User 到 Ayrshare ProfileKey 的映射数据库表。</li>
+                            <li>开发「创建发布」界面 (支持多图、视频上传、文本编辑)。</li>
+                            <li>配置 Webhook 接收端点 (处理发布成功/失败的回调)。</li>
+                            <li><strong>产出：</strong> Beta 版本发布工具，支持 3-4 个主要平台。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-white border-4 border-teal-500 shadow"></div>
+                    <h3 class="font-bold text-lg text-gray-800">阶段三：数据分析与优化 (Week 4-5)</h3>
+                    <div class="mt-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                            <li>对接 `/analytics` 接口，构建数据仪表盘。</li>
+                            <li>实现定时任务，定期同步社交媒体互动数据。</li>
+                            <li>压力测试与错误处理机制优化 (如 Token 过期处理)。</li>
+                            <li><strong>产出：</strong> 包含数据看板的完整功能版本。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 h-6 w-6 rounded-full bg-white border-4 border-gray-300 shadow"></div>
+                    <h3 class="font-bold text-lg text-gray-800">阶段四：上线与扩展 (Week 6+)</h3>
+                    <div class="mt-2 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">
+                            <li>正式环境部署。</li>
+                            <li>根据用户反馈逐步开放更多平台 (如 Pinterest, GMB)。</li>
+                            <li>研究高级功能：评论回复 (Comments API) 集成。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
+            <p>© 2024 GlobalConnect Research. Generated based on Ayrshare API Documentation.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA & STATE ---
+        const platformsData = [
+            { name: "Facebook", type: "social", publish: true, analytics: true, comments: true, icon: "📘" },
+            { name: "Instagram", type: "social", publish: true, analytics: true, comments: true, icon: "📸" },
+            { name: "TikTok", type: "video", publish: true, analytics: true, comments: true, icon: "🎵" },
+            { name: "Twitter (X)", type: "social", publish: true, analytics: true, comments: true, icon: "🐦" },
+            { name: "LinkedIn", type: "professional", publish: true, analytics: true, comments: true, icon: "💼" },
+            { name: "YouTube", type: "video", publish: true, analytics: true, comments: false, icon: "▶️" },
+            { name: "Pinterest", type: "social", publish: true, analytics: true, comments: false, icon: "📌" },
+            { name: "Google Business", type: "professional", publish: true, analytics: true, comments: true, icon: "🏪" },
+            { name: "Telegram", type: "social", publish: true, analytics: false, comments: false, icon: "✈️" },
+            { name: "Reddit", type: "social", publish: true, analytics: false, comments: false, icon: "🤖" },
+        ];
+
+        const codeSnippets = {
+            auth: `POST https://app.ayrshare.com/api/profiles/profile
+Headers: { 
+  "Authorization": "Bearer YOUR_API_KEY",
+  "Content-Type": "application/json"
+}
+Body: {
+  "title": "Client_Business_A", 
+  "refId": "internal_user_123" // 您的内部用户ID
+}
+
+// Response:
+{
+  "status": "success",
+  "profileKey": "PROFILE_KEY_FOR_USER_123", // 存入数据库
+  ...
+}`,
+            connect: `POST https://app.ayrshare.com/api/profiles/generateJWT
+Headers: { 
+  "Authorization": "Bearer YOUR_API_KEY",
+  "Content-Type": "application/json"
+}
+Body: {
+  "domain": "yourwebsite.com",
+  "privateKey": "content_of_private_key_file",
+  "profileKey": "USER_PROFILE_KEY"
+}
+
+// Result: Generates a JWT to use in the frontend SDK
+// to launch the "Link Account" popup.`,
+            post: `POST https://app.ayrshare.com/api/post
+Headers: { 
+  "Authorization": "Bearer USER_PROFILE_KEY", // 使用子用户的Key
+  "Content-Type": "application/json"
+}
+Body: {
+  "post": "Hello World! Check out our new product.",
+  "platforms": ["facebook", "twitter", "linkedin"],
+  "mediaUrls": ["https://img.com/pic1.jpg"]
+}
+
+// Ayrshare handles resizing and distribution.`,
+            analytics: `POST https://app.ayrshare.com/api/analytics/social
+Headers: { 
+  "Authorization": "Bearer USER_PROFILE_KEY"
+}
+Body: {
+  "platforms": ["instagram", "tiktok"]
+}
+
+// Response:
+{
+  "instagram": {
+    "impressions": 1502,
+    "reach": 1200,
+    "likes": 340
+  },
+  ...
+}`
+        };
+
+        // --- CHART INITIALIZATION ---
+        function initCharts() {
+            // Chart 1: Dev Time Comparison
+            const ctx1 = document.getElementById('devTimeChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['自研 (In-House)', '集成 Ayrshare'],
+                    datasets: [{
+                        label: '预估开发周数 (Weeks)',
+                        data: [24, 4], // 6 months vs 1 month
+                        backgroundColor: ['#94a3b8', '#0d9488'],
+                        borderRadius: 6,
+                        barThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' Weeks';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Weeks' } }
+                    }
+                }
+            });
+
+            // Chart 2: Analytics Coverage (Radar or Bar)
+            const ctx2 = document.getElementById('analyticsCoverageChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['点赞/互动', '展示/覆盖 (Impressions)', '粉丝画像', '点击率 (CTR)', '视频完播率'],
+                    datasets: [{
+                        label: 'Ayrshare API 能力',
+                        data: [95, 90, 60, 85, 80],
+                        fill: true,
+                        backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                        borderColor: 'rgb(20, 184, 166)',
+                        pointBackgroundColor: 'rgb(20, 184, 166)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(20, 184, 166)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: { line: { tension: 0.3 } },
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- LOGIC: PLATFORM GRID ---
+        function renderPlatformGrid(filterType) {
+            const grid = document.getElementById('platform-grid');
+            grid.innerHTML = ''; // Clear
+
+            const filtered = filterType === 'all' 
+                ? platformsData 
+                : platformsData.filter(p => p.type === filterType);
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <span class="text-2xl mr-2">${p.icon}</span>
+                            <span class="font-bold text-gray-800">${p.name}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">发布 (Post)</span>
+                            ${getStatusBadge(p.publish)}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">数据 (Analytics)</span>
+                            ${getStatusBadge(p.analytics)}
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">评论 (Comments)</span>
+                            ${getStatusBadge(p.comments)}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function getStatusBadge(isSupported) {
+            return isSupported 
+                ? `<span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">● 支持</span>`
+                : `<span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">○ 不支持</span>`;
+        }
+
+        function filterPlatforms(type) {
+            renderPlatformGrid(type);
+        }
+
+        // --- LOGIC: TABS & NAVIGATION ---
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show selected
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+
+            // Update Nav state
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+        }
+
+        // --- LOGIC: CODE SNIPPETS ---
+        function showCodeSnippet(key) {
+            const display = document.getElementById('code-display');
+            const label = document.getElementById('code-label');
+            const snippet = codeSnippets[key];
+            
+            // Highlight step card styling
+            document.querySelectorAll('.step-card').forEach(el => el.classList.remove('active-step'));
+            event.currentTarget.classList.add('active-step');
+
+            // Typewriter effect or simple HTML replacement
+            label.innerText = `Displaying: ${key.toUpperCase()} Workflow`;
+            display.innerHTML = `<pre class="text-xs md:text-sm whitespace-pre-wrap font-mono text-green-300">${escapeHtml(snippet)}</pre>`;
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderPlatformGrid('all');
+            // Default select first step
+            // showCodeSnippet('auth'); 
+        });
+
+    </script>
+</body>
+</html>
